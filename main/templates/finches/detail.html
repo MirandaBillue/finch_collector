@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% block content %}
+
+
+{% for photo in finch.photo_set.all %}
+<img class="circle responsive-img" src="{{photo.url}}">
+{% empty %}
+<div class="card-panel teal-text center-align">No Photos Uploaded</div>
+{% endfor %}
+
+<div class="row ">
+  <div class="col s6">
+    <div class="card lime lighten-4">
+      <div class="card-content">
+        <span class="flow-text">{{ finch.name }}</span>
+        <p><strong>Description: {{ finch.description }}</strong></p>
+        <p><strong>Species: {{ finch.species }}</strong></p>
+      </div>
+      <div class="card-action teal darken-2">
+        <a href="{% url 'finches_update' finch.id %}" class="white-text">Edit</a>
+        <a href="{% url 'finches_delete' finch.id %}" class="white-text">Delete</a>
+      </div>
+      <div class="card teal accent-1">
+        <form action="{% url 'add_photo' finch.id %}" enctype="multipart/form-data" method="POST"
+          class="card-panel deep-purple lighten-5">
+          {% csrf_token %}
+          <input type="file" name="photo-file" />
+          <br />
+          <input type="submit" class="btn" value="Upload Photo" />
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col s6">
+    <form action="{% url 'add_lifestyle' finch.id %}" method="post">
+      {% csrf_token %} {{ lifestyles_form.as_p }}
+      <input type="submit" class="btn" value="Add Lifestyle Pattern" />
+    </form>
+   
+    <div class="card teal accent-1">
+      <div class="card-content">
+        {% for lifestyle in finch.lifestyle_set.all %}
+        <p>Migrates: {{lifestyle.migrates}}</p>
+        <p>Lifestyle: {{lifestyle.get_lifestyle_display}}</p>
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    var selectEl = document.getElementById('id_migrates');
+    M.FormSelect.init(selectEl);
+    var selectEl = document.getElementById('id_lifestyle');
+    M.FormSelect.init(selectEl);
+  </script>
+  {% endblock %}

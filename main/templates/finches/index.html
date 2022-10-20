@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>My Finches!</h1>
+
+{% for finch in finches %}
+<div class="card">
+  <a href="{% url 'detail' finch.id %}">
+    <div class="card-panel hoverable lime lighten-4">
+      <h4 class="card-title black-text">{{ finch.name }}</h4>
+      <p class="black-text">Species: {{ finch.species }}</p>
+      {% for photo in finch.photo_set.all %}
+      <img class="responsive-img" src="{{photo.url}}">
+      {% empty %}
+      <div class="card-panel deep-purple-text center-align">No Photos Uploaded</div>
+      {% endfor %}
+    </div>
+  </a>
+</div>
+{% endfor %} {% endblock %}
