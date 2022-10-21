@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Accessory Details</h1>
+
+
+<div class="card purple lighten-4">
+    <a href="{% url 'accessories_detail' accessory.id %}">
+        <div class="card-content">
+            <span class="card-title">A <span>{{ accessory.name }}</span> {{ accessory.description }}</span>
+        </div>
+        <div class="card-action purple darken-4">
+            <a href="{% url 'accessories_update' accessory.id %}">Edit</a>
+            <a href="{% url 'accessories_delete' accessory.id %}">Delete</a>
+        </div>
+    </a>
+</div>
+
+{% endblock %}

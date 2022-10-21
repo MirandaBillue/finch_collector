@@ -1,4 +1,7 @@
+from pyexpat import model
 from django.shortcuts import render, redirect
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
@@ -6,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 import uuid
 import boto3
-from .models import Finch, Photo
+from .models import Accessory, Finch, Photo
 from .forms import LifestyleForm
 S3_BASE_URL = 'https://s3.us-east-1.amazonaws.com/'
 BUCKET = 'finches11'
@@ -27,8 +30,11 @@ def finches_detail(request, finch_id):
   finch = Finch.objects.get(id=finch_id)
   lifestyles_form = LifestyleForm()
 
+  no_accessories = Accessory.objects.exclude(id__in = finch.accessories.all().values_list('id'))
+
   return render(request, 'finches/detail.html',
-   { 'finch': finch, 'lifestyles_form': lifestyles_form })
+   { 'finch': finch, 'lifestyles_form': lifestyles_form,
+   'accessories' : no_accessories })
 
 
 @login_required
@@ -39,6 +45,11 @@ def add_lifestyle(request, finch_id):
     new_lifestyle.finch_id = finch_id
     new_lifestyle.save()
   return redirect('detail', finch_id=finch_id)
+
+@login_required
+def assoc_accessory(request, finch_id, accessory_id):
+  Finch.objects.get(id=finch_id).accessories.add(accessory_id)
+  return redirect('detail', finch_id=finch_id)  
 
 def signup(request):
   error_message = ''
@@ -56,7 +67,7 @@ def signup(request):
 
 class FinchCreate(LoginRequiredMixin, CreateView):
   model = Finch
-  fields = ['species', 'description']
+  fields = ['name', 'species', 'description']
 
   def form_valid(self, form):
     form.instance.user = self.request.user  
@@ -65,11 +76,33 @@ class FinchCreate(LoginRequiredMixin, CreateView):
 
 class FinchUpdate(LoginRequiredMixin, UpdateView):
   model = Finch
-  fields = ['species', 'description']
+  fields = ['name', 'species', 'description']
 
 class FinchDelete(LoginRequiredMixin, DeleteView):
   model = Finch
-  success_url = '/finches/' 
+  success_url = '/finches/'   
+
+class AccessoryCreate(LoginRequiredMixin, CreateView):
+  model = Accessory
+  fields = ['name', 'description'] 
+
+class AccessoryUpdate(LoginRequiredMixin, UpdateView):
+  model = Accessory
+  fields = ['name', 'description']  
+
+class AccessoryDelete(LoginRequiredMixin, DeleteView):
+  model = Accessory
+  success_url = '/accessories/' 
+
+class AccessoryDetail(LoginRequiredMixin, DetailView):
+  model = Accessory
+  template_name = 'accessories/detail.html' 
+
+class AccessoryList(LoginRequiredMixin, ListView):
+  model = Accessory
+  template_name = 'accessories/index.html' 
+
+
 
 @login_required
 def add_photo(request, finch_id):

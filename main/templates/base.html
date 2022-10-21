@@ -13,7 +13,7 @@
   <title>Finch Collector</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  
+
 </head>
 
 <body class="teal accent-1">
@@ -29,7 +29,9 @@
           <li><a href="{% url 'about' %}">About</a></li>
           {% if user.is_authenticated %}
           <li><a href="{% url 'finches_create' %}">Add A Finch</a></li>
-          <li><a href="{% url 'index' %}">Finch Bench</a></li>
+          <li><a href="{% url 'index' %}">View All Finches</a></li>
+          <li><a href="{% url 'accessories_create' %}">Add An Accessory</a></li>
+          <li><a href="{% url 'accessories_index' %}">View All Accessories</a></li>
           <li><a href="{% url 'logout' %}">Log Out</a></li>
           {% else %}
           <li><a href="{% url 'signup' %}">Sign Up</a></li>

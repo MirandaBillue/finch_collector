@@ -41,13 +41,48 @@
         {% for lifestyle in finch.lifestyle_set.all %}
         <p>Migrates: {{lifestyle.migrates}}</p>
         <p>Lifestyle: {{lifestyle.get_lifestyle_display}}</p>
-
         {% endfor %}
       </div>
     </div>
   </div>
-
-
+  <div class="col s6">
+    <h3>Available Accessories</h3>
+    {% if accessories.count %}
+    {% for accessory in accessories.all %}
+    <div class="card purple lighten-4">
+        <div class="card-content">
+            <span class="card-title">
+                A <span class="">{{ accessory.name }}</span> {{ accessory.description }}
+            </span>
+        </div>
+        <div class="card-action card-action purple darken-4">
+            <form action="{% url 'assoc_accessory' finch.id accessory.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn">Add</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h5>{{finch.name}} Already Has All accessorys Available</h5>
+    {% endif %}
+</div>
+    <div class="col s6">
+        <h3>{{ finch.name }}'s Accessories</h3>
+        {% if finch.accessories.count %} {% for accessory in finch.accessories.all %}
+        <div class="card purple lighten-4">
+            <div class="card-content">
+                <span class="card-title">
+                    A <span>
+                        {{ accessory.name }}</span> {{ accessory.description }}
+                </span>
+            </div>
+        </div>
+        {% endfor %} {% else %}
+        <h5>No Accessories</h5>
+        {% endif %}
+    </div>
+  
 
   <script>
     var selectEl = document.getElementById('id_migrates');

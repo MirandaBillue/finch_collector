@@ -10,16 +10,23 @@ LIFESTYLE = (
     ('N', 'Nomadic')
 )
 
-BOOLEAN = (
-    (1, 'Yes'),
-    (2, 'No'),
+OPTION = (
+    (0, 'No'),
+    (1, 'Yes')
 )
 
-# Create your models here.
+class Accessory(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=250)
+
+    def get_absolute_url(self):
+        return reverse('accessories_detail', kwargs={'pk': self.id})
+
 class Finch(models.Model):
     name = models.CharField(max_length=100)
     species = models.CharField(max_length=100)
     description = models.TextField(max_length=250)
+    accessories = models.ManyToManyField(Accessory)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):
@@ -38,9 +45,9 @@ class Photo(models.Model):
 
 
 class Lifestyle(models.Model):
-  migrates = models.BooleanField(choices=BOOLEAN, default=2, blank=False)
+  migrates = models.BooleanField(choices=OPTION, blank=False)
   lifestyle = models.CharField(
-    max_length=150,
+    max_length=20,
 	 choices=LIFESTYLE,
 	 default=LIFESTYLE[0][0]
   )
